@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="" type="text/xsl"?>
+<rss version="2.0">
+<channel>
+    <title>Bhuvan-Disaster Services</title>
+    <link>https://bhuvan-app1.nrsc.gov.in/disaster</link>
+    <description>Disaster Management-Information Support</description>
+    <language>en</language>
+	<item>
+<title>Disaster Services-landslide</title>
+<link>https://bhuvan-app1.nrsc.gov.in/disaster/disaster.php?id=landslide</link>
+<description>Okimath Landslide on 14 Sep 2012 </description>
+<comments>https://bhuvan-app1.nrsc.gov.in/disaster</comments>
+ <pubDate>Fri, 09 Nov 2012 12:22:33 +0000</pubDate>
+ </item>
+ 
+</channel>
+</rss>
+
+

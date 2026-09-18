@@ -1,0 +1,75 @@
+project:
+  name: wayanad_ai_dynamic_hazard_relocation
+  pilot_area: Wayanad, Kerala
+
+spatial_model:
+  name: spatial_landslide_susceptibility
+  status: baseline_ready_with_label_caveat
+
+  target:
+    name: historical_landslide
+    type: binary
+    source: data/processed/landslide/inventory/wayanad_historical_landslide_presence_30m.tif
+    interpretation: mapped_historical_presence
+    not_true_negative: true
+
+  features:
+    - slope_degrees
+    - gsi_susceptibility
+    - gsi_coverage
+    - tree_cover_fraction
+    - grassland_fraction
+    - cropland_fraction
+    - builtup_fraction
+    - bare_fraction
+    - water_fraction
+    - wetland_fraction
+
+  train:
+    path: data/processed/features/wayanad_spatial_train.parquet
+
+  test:
+    path: data/processed/features/wayanad_spatial_test.parquet
+
+  validation:
+    type: spatial_block
+    block_size_m: 3000
+
+  primary_metrics:
+    - pr_auc
+    - roc_auc
+    - recall
+    - precision
+
+  avoid_as_primary_metric:
+    - accuracy
+
+temporal_model:
+  name: future_dynamic_landslide_risk
+  status: not_ready
+
+  required:
+    - event_dated_landslide_records
+    - temporally_aligned_rainfall
+    - historical_forecast_or_reanalysis_data
+
+  horizons:
+    - now
+    - 24h
+    - 72h
+
+population:
+  status: needs_verification
+  census_reference_year: 2011
+  source: data/raw/population/census_2011_kerala_village_population/
+
+habitation:
+  status: needs_boundary_mapping
+
+relocation:
+  status: dataset_required
+
+system_principle:
+  prediction: AI predicts and prioritizes
+  verification: Humans verify
+  decision: Authorities decide
