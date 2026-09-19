@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.api.habitations import router as habitation_router
 from backend.app.api.relocation import router as relocation_router
 from backend.app.api.risk import router as risk_router
+from backend.app.api.simulation import router as simulation_router
 from backend.app.api.system import router as system_router
 from backend.app.core.config import settings
 from backend.app.core.error_handlers import (
@@ -31,6 +32,7 @@ app.add_middleware(
 app.include_router(habitation_router)
 app.include_router(risk_router)
 app.include_router(relocation_router)
+app.include_router(simulation_router)
 app.include_router(system_router)
 
 app.add_exception_handler(HTTPException, http_exception_handler)

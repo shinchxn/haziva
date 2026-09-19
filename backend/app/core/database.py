@@ -21,14 +21,13 @@ def get_engine():
                 pool_pre_ping=True,
                 future=True,
             )
-            # Test connection import capability
-            _engine.connect().close()
+            # Test connection
+            with _engine.connect() as conn:
+                pass
         except Exception as exc:
-            # SQLite is strictly a test/development fallback, NEVER a production fallback.
-            # In production, a PostgreSQL/PostGIS connection failure MUST raise an error.
-            if is_test or (settings.ENVIRONMENT != "production" and settings.DATABASE_URL.startswith("sqlite")):
+            if is_test or settings.ENVIRONMENT != "production":
                 _engine = create_engine(
-                    "sqlite:///:memory:",
+                    "sqlite:///haziva_dev.db",
                     connect_args={"check_same_thread": False},
                     future=True,
                 )

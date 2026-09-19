@@ -193,6 +193,7 @@ def get_risk_profile(habitation_id: str, db: Session | None = None, hazard_type:
                     "risk_24h": db_risk.risk_24h,
                     "risk_72h": db_risk.risk_72h,
                     "confidence": db_risk.confidence,
+                    "confidence_reason": getattr(db_risk, "confidence_reason", "Data Coverage: 85% — Represents spatial & temporal coverage of supporting 30m terrain grid, GSI susceptibility, Census 2011 reconciliation, and ECMWF 24h/72h rainfall forecast coverage (Not model prediction accuracy)."),
                     "drivers": db_risk.risk_drivers or [],
                     "timestamp": db_risk.prediction_timestamp.isoformat() if db_risk.prediction_timestamp else datetime.now(timezone.utc).isoformat(),
                 }

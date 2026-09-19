@@ -6,6 +6,7 @@ class RiskProfile(BaseModel):
     risk_24h: float = Field(default=0.81)
     risk_72h: float = Field(default=0.76)
     confidence: float = Field(default=0.74)
+    confidence_reason: str | None = Field(default=None)
     drivers: list[str] = Field(default_factory=lambda: [
         "High landslide susceptibility",
         "High recent rainfall",

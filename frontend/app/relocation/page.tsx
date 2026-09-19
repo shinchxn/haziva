@@ -306,11 +306,14 @@ export default function RelocationPage() {
                                 <div className="flex items-start justify-between gap-4">
                                   <div>
                                     <h3 className="font-semibold text-slate-900">
-                                      {site.site_id}
+                                      {site.name || site.site_id}
                                     </h3>
+                                    <p className="text-xs text-slate-400">
+                                      {site.site_id} ({site.facility_category || "facility"})
+                                    </p>
 
                                     <p className="mt-1 text-sm text-slate-500">
-                                      Accessibility:{" "}
+                                      Road Proximity:{" "}
                                       {site.accessibility ??
                                         "Not provided"}
                                     </p>
@@ -324,7 +327,7 @@ export default function RelocationPage() {
                                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                                   <div className="rounded-lg bg-slate-50 p-3">
                                     <p className="text-xs text-slate-500">
-                                      Safety
+                                      Safety Status
                                     </p>
 
                                     <p className="mt-1 text-sm font-semibold text-slate-900">
@@ -334,14 +337,25 @@ export default function RelocationPage() {
 
                                   <div className="rounded-lg bg-slate-50 p-3">
                                     <p className="text-xs text-slate-500">
-                                      Capacity
+                                      Facility Capacity
                                     </p>
 
                                     <p className="mt-1 text-sm font-semibold text-slate-900">
-                                      {site.capacity}
+                                      {site.capacity != null ? `${site.capacity} (Category Heuristic)` : "Unverified"}
                                     </p>
                                   </div>
                                 </div>
+
+                                {site.ranking_explanation && (
+                                  <div className="mt-3 rounded-lg bg-slate-50 p-3">
+                                    <p className="text-xs font-medium text-slate-500">
+                                      Justification & Evidence
+                                    </p>
+                                    <p className="mt-1 text-xs text-slate-600">
+                                      {site.ranking_explanation}
+                                    </p>
+                                  </div>
+                                )}
                               </div>
                             ),
                           )}
@@ -349,8 +363,7 @@ export default function RelocationPage() {
                           {candidateSites.length ===
                             0 && (
                             <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500">
-                              No candidate sites were
-                              provided by the backend.
+                              No verified relocation candidates available for this habitation.
                             </p>
                           )}
                         </div>
@@ -384,11 +397,14 @@ export default function RelocationPage() {
                                 <div className="flex items-start justify-between gap-4">
                                   <div>
                                     <h3 className="font-semibold text-slate-900">
-                                      {site.site_id}
+                                      {site.name || site.site_id}
                                     </h3>
+                                    <p className="text-xs text-slate-400">
+                                      {site.site_id} ({site.facility_category || "facility"})
+                                    </p>
 
                                     <p className="mt-1 text-sm text-slate-500">
-                                      Accessibility:{" "}
+                                      Road Proximity:{" "}
                                       {site.accessibility ??
                                         "Not provided"}
                                     </p>
@@ -402,7 +418,7 @@ export default function RelocationPage() {
                                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                                   <div className="rounded-lg bg-slate-50 p-3">
                                     <p className="text-xs text-slate-500">
-                                      Safety
+                                      Safety Status
                                     </p>
 
                                     <p className="mt-1 text-sm font-semibold text-slate-900">
@@ -412,11 +428,11 @@ export default function RelocationPage() {
 
                                   <div className="rounded-lg bg-slate-50 p-3">
                                     <p className="text-xs text-slate-500">
-                                      Capacity
+                                      Facility Capacity
                                     </p>
 
                                     <p className="mt-1 text-sm font-semibold text-slate-900">
-                                      {site.capacity}
+                                      {site.capacity != null ? `${site.capacity} (Category Heuristic)` : "Unverified"}
                                     </p>
                                   </div>
                                 </div>
@@ -441,8 +457,7 @@ export default function RelocationPage() {
                           {rejectedSites.length ===
                             0 && (
                             <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500">
-                              No rejected sites were
-                              provided by the backend.
+                              No rejected sites were provided by the backend.
                             </p>
                           )}
                         </div>

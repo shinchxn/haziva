@@ -17,5 +17,7 @@ class Risk(Base):
     risk_72h: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     trajectory: Mapped[str] = mapped_column(String(64), nullable=True)
     confidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    confidence_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
     prediction_timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     risk_drivers: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
+

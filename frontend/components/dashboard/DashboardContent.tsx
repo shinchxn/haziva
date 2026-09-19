@@ -199,8 +199,8 @@ export default function DashboardContent() {
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="rounded-lg bg-orange-50 px-5 py-3">
-                  <p className="text-xs text-orange-700">
-                    Current Risk
+                  <p className="text-xs font-semibold text-orange-700">
+                    Baseline Susceptibility
                   </p>
 
                   <p className="text-2xl font-bold text-orange-800">
@@ -278,7 +278,7 @@ export default function DashboardContent() {
                 </th>
 
                 <th className="px-4 py-3 font-semibold">
-                  Current Risk
+                  Baseline Susceptibility
                 </th>
 
                 <th className="px-4 py-3 font-semibold">

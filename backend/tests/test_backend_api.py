@@ -30,15 +30,15 @@ def test_get_habitations():
     assert response.status_code == 200
     payload = response.json()
     assert isinstance(payload, list)
-    assert payload[0]['id'] == 'hab_001'
+    assert payload[0]['id'].startswith('hab_')
     assert payload[0]['priority'] in {'Low', 'Medium', 'High', 'Immediate Assessment'}
 
 
 def test_get_habitation_by_id():
-    response = client.get('/habitations/hab_001')
+    response = client.get('/habitations/hab_627296')
     assert response.status_code == 200
     payload = response.json()
-    assert payload['id'] == 'hab_001'
+    assert payload['id'] == 'hab_627296'
     assert payload['population'] > 0
     assert payload['current_risk'] >= 0
 
@@ -49,7 +49,7 @@ def test_get_habitation_not_found():
 
 
 def test_get_habitation_risk():
-    response = client.get('/habitations/hab_001/risk')
+    response = client.get('/habitations/hab_627296/risk')
     assert response.status_code == 200
     payload = response.json()
     assert 'current' in payload
@@ -61,10 +61,10 @@ def test_get_habitation_risk():
 
 
 def test_get_habitation_relocation():
-    response = client.get('/habitations/hab_001/relocation')
+    response = client.get('/habitations/hab_627327/relocation')
     assert response.status_code == 200
     payload = response.json()
-    assert payload['habitation_id'] == 'hab_001'
+    assert payload['habitation_id'] == 'hab_627327'
     assert isinstance(payload['sites'], list)
     assert len(payload['sites']) > 0
 

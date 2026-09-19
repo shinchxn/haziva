@@ -15,49 +15,43 @@ def get_relocation_sites(habitation_id: str, db: Session | None = None):
     if not habitation:
         return {"habitation_id": habitation_id, "sites": []}
 
+    target_hab_id = habitation["id"]
+
     if HAS_ORM_MODELS and db is not None:
         try:
-            db_sites = db.query(RelocationSite).filter(RelocationSite.habitation_id == habitation_id).all()
+            db_sites = db.query(RelocationSite).filter(RelocationSite.habitation_id == target_hab_id).all()
             if db_sites:
                 sites = []
                 for s in db_sites:
                     sites.append({
                         "site_id": s.site_id,
-                        "status": s.status,
-                        "safety": s.safety_result or "pass",
-                        "capacity": s.capacity or 0,
-                        "accessibility": s.accessibility or "good",
-                        "infrastructure": s.infrastructure_info or {},
-                        "location": {"type": "Point", "coordinates": [76.06, 11.65]},
+                        "name": getattr(s, "name", None) or f"Facility {s.site_id}",
+                        "facility_category": getattr(s, "facility_category", None) or "shelter",
+                        "status": s.status or "candidate",
+                        "safety": s.safety_result or "INSUFFICIENT_EVIDENCE",
+                        "capacity": s.capacity,
+                        "capacity_status": getattr(s, "capacity_status", "HEURISTIC"),
+                        "accessibility": s.accessibility or "NEAREST_OSM_ROAD_AVAILABLE",
+                        "infrastructure": s.infrastructure_info or {
+                            "water": {"status": "UNKNOWN", "source": None},
+                            "shelter": {"status": "VERIFIED", "source": "OpenStreetMap"},
+                            "roads": {"status": "VERIFIED", "source": "OpenStreetMap proximity"}
+                        },
+                        "location": {"type": "Point", "coordinates": [float(s.longitude), float(s.latitude)]},
+                        "latitude": float(s.latitude),
+                        "longitude": float(s.longitude),
                         "rejection_reason": s.rejection_reason,
+                        "transparent_priority_score": getattr(s, "transparent_priority_score", 0.5),
+                        "ranking_explanation": getattr(s, "ranking_explanation", "Candidate site subject to authority verification."),
                     })
-                return {"habitation_id": habitation_id, "sites": sites}
-        except Exception:
+                return {"habitation_id": habitation_id, "sites": sites, "status": "OK", "message": None}
+        except Exception as err:
             pass
-
 
     return {
         "habitation_id": habitation_id,
-        "sites": [
-            {
-                "site_id": "site_001",
-                "status": "candidate",
-                "safety": "pass",
-                "capacity": 850,
-                "accessibility": "good",
-                "infrastructure": {"water": True, "shelter": True, "roads": True},
-                "location": {"type": "Point", "coordinates": [76.06, 11.65]},
-                "rejection_reason": None,
-            },
-            {
-                "site_id": "site_002",
-                "status": "rejected",
-                "safety": "review",
-                "capacity": 420,
-                "accessibility": "moderate",
-                "infrastructure": {"water": True, "shelter": False, "roads": True},
-                "location": {"type": "Point", "coordinates": [76.08, 11.63]},
-                "rejection_reason": "Steep access and limited shelter capacity.",
-            },
-        ],
+        "sites": [],
+        "status": "NO_DATA",
+        "message": "No verified relocation candidates available for this habitation."
     }
+

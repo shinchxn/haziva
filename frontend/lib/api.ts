@@ -3,6 +3,7 @@ import type {
   HabitationSummary,
   RelocationProfile,
   RiskProfile,
+  SimulationResult,
   SystemStatus,
   TrajectoryResponse,
 } from "@/types/api";
@@ -16,6 +17,36 @@ async function fetchJson<T>(endpoint: string): Promise<T> {
     headers: {
       "Content-Type": "application/json",
     },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    let errorDetail = `API error (${response.status})`;
+    try {
+      const errorJson = await response.json();
+      if (errorJson?.detail) {
+        errorDetail =
+          typeof errorJson.detail === "string"
+            ? errorJson.detail
+            : JSON.stringify(errorJson.detail);
+      }
+    } catch {
+      errorDetail = response.statusText || errorDetail;
+    }
+    throw new Error(errorDetail);
+  }
+
+  return response.json();
+}
+
+async function postJson<T>(endpoint: string, body: unknown): Promise<T> {
+  const url = `${API_BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
     cache: "no-store",
   });
 
@@ -65,5 +96,16 @@ export const api = {
 
   async getSystemStatus(): Promise<SystemStatus> {
     return fetchJson<SystemStatus>("/system/status");
+  },
+
+  async simulateHabitationIncident(
+    habitationId: string,
+    simulatedRainfallMm: number,
+    horizon: string = "24h"
+  ): Promise<SimulationResult> {
+    return postJson<SimulationResult>(`/habitations/${habitationId}/simulate`, {
+      simulated_rainfall_mm: simulatedRainfallMm,
+      horizon,
+    });
   },
 };

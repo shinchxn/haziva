@@ -41,6 +41,38 @@ export default function HabitationMap({
       "top-right",
     );
 
+    const addVillageBoundaries = () => {
+      if (!newMap.getSource("wayanad-villages")) {
+        newMap.addSource("wayanad-villages", {
+          type: "geojson",
+          data: "/data/wayanad_village_boundaries.geojson",
+        });
+
+        newMap.addLayer({
+          id: "wayanad-villages-fill",
+          type: "fill",
+          source: "wayanad-villages",
+          paint: {
+            "fill-color": "#38bdf8",
+            "fill-opacity": 0.12,
+          },
+        });
+
+        newMap.addLayer({
+          id: "wayanad-villages-outline",
+          type: "line",
+          source: "wayanad-villages",
+          paint: {
+            "line-color": "#0284c7",
+            "line-width": 1.5,
+            "line-opacity": 0.6,
+          },
+        });
+      }
+    };
+
+    newMap.on("load", addVillageBoundaries);
+
     map.current = newMap;
 
     return () => {
