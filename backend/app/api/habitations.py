@@ -10,14 +10,12 @@ router = APIRouter(tags=["Habitations"])
 
 @router.get("/habitations", response_model=list[HabitationSummary])
 def list_habitations(db: Session = Depends(get_db)):
-    del db
-    return get_habitation_summaries()
+    return get_habitation_summaries(db=db)
 
 
 @router.get("/habitations/{habitation_id}", response_model=HabitationDetail)
 def read_habitation(habitation_id: str, db: Session = Depends(get_db)):
-    del db
-    habitation = get_habitation(habitation_id)
+    habitation = get_habitation(habitation_id, db=db)
     if not habitation:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

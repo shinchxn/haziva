@@ -11,10 +11,9 @@ router = APIRouter(tags=["Relocation"])
 
 @router.get("/habitations/{habitation_id}/relocation", response_model=RelocationProfile)
 def get_habitation_relocation(habitation_id: str, db: Session = Depends(get_db)):
-    del db
-    if not get_habitation(habitation_id):
+    if not get_habitation(habitation_id, db=db):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Habitation '{habitation_id}' not found.",
         )
-    return get_relocation_sites(habitation_id)
+    return get_relocation_sites(habitation_id, db=db)

@@ -11,4 +11,15 @@ class RiskProfile(BaseModel):
         "High recent rainfall",
         "High forecast rainfall",
     ])
+    hazard_type: str = Field(default="landslide")
     timestamp: str | None = Field(default=None)
+
+
+class TrajectoryResponse(BaseModel):
+    habitation_id: str
+    trajectory: str
+    current: float
+    risk_24h: float
+    risk_72h: float
+    hazard_type: str = Field(default="landslide")
+    timestamp: str

@@ -1,5 +1,18 @@
+from datetime import datetime, timezone
+from sqlalchemy.orm import Session
+
+try:
+    from backend.app.models.habitation import Habitation
+    from backend.app.models.risk import Risk
+    HAS_ORM_MODELS = True
+except ImportError:
+    Habitation = None
+    Risk = None
+    HAS_ORM_MODELS = False
+
 from backend.app.services.priority import calculate_priority
 from backend.app.services.trajectory import calculate_trajectory
+
 
 
 HABITATIONS = [
@@ -52,10 +65,51 @@ HABITATIONS = [
 ]
 
 
-def get_habitation(habitation_id: str):
+def get_habitation(habitation_id: str, db: Session | None = None, hazard_type: str = "landslide"):
+    if HAS_ORM_MODELS and db is not None:
+        try:
+            db_hab = db.query(Habitation).filter(Habitation.id == habitation_id).first()
+            if db_hab:
+                risk_profile = get_risk_profile(habitation_id, db=db, hazard_type=hazard_type)
+                trajectory = calculate_trajectory(
+                    risk_profile["current"],
+                    risk_profile["risk_24h"],
+                    risk_profile["risk_72h"],
+                )
+                exp_score = db_hab.exposure_info.get("score", 0.5) if db_hab.exposure_info else 0.5
+                vuln_score = db_hab.vulnerability_info.get("score", 0.5) if db_hab.vulnerability_info else 0.5
+                priority = calculate_priority(
+                    risk_profile["current"],
+                    risk_profile["risk_72h"],
+                    trajectory,
+                    exp_score,
+                    vuln_score,
+                )
+                return {
+                    "id": db_hab.id,
+                    "name": db_hab.name,
+                    "location": {"type": "Point", "coordinates": [76.0, 11.6]},
+                    "latitude": 11.6,
+                    "longitude": 76.0,
+                    "population": db_hab.population or 0,
+                    "households": db_hab.households or 0,
+                    "exposure_info": db_hab.exposure_info or {},
+                    "vulnerability_info": db_hab.vulnerability_info or {},
+                    "accessibility_info": db_hab.accessibility_info or {},
+                    "current_risk": risk_profile["current"],
+                    "risk_24h": risk_profile["risk_24h"],
+                    "risk_72h": risk_profile["risk_72h"],
+                    "confidence": risk_profile["confidence"],
+                    "priority": priority,
+                    "trajectory": trajectory,
+                }
+        except Exception:
+            pass
+
+
     for habitation in HABITATIONS:
         if habitation["id"] == habitation_id:
-            risk_profile = get_risk_profile(habitation_id)
+            risk_profile = get_risk_profile(habitation_id, db=db, hazard_type=hazard_type)
             trajectory = calculate_trajectory(
                 risk_profile["current"],
                 risk_profile["risk_24h"],
@@ -82,10 +136,30 @@ def get_habitation(habitation_id: str):
     return None
 
 
-def get_habitation_summaries():
+def get_habitation_summaries(db: Session | None = None, hazard_type: str = "landslide"):
+    if HAS_ORM_MODELS and db is not None:
+        try:
+            db_habs = db.query(Habitation).all()
+            if db_habs:
+                summaries = []
+                for db_hab in db_habs:
+                    hab_detail = get_habitation(db_hab.id, db=db, hazard_type=hazard_type)
+                    if hab_detail:
+                        summaries.append({
+                            "id": hab_detail["id"],
+                            "name": hab_detail["name"],
+                            "latitude": hab_detail["latitude"],
+                            "longitude": hab_detail["longitude"],
+                            "priority": hab_detail["priority"],
+                            "current_risk": hab_detail["current_risk"],
+                        })
+                return summaries
+        except Exception:
+            pass
+
     summaries = []
     for habitation in HABITATIONS:
-        risk_profile = get_risk_profile(habitation["id"])
+        risk_profile = get_risk_profile(habitation["id"], db=db, hazard_type=hazard_type)
         trajectory = calculate_trajectory(
             risk_profile["current"],
             risk_profile["risk_24h"],
@@ -109,7 +183,23 @@ def get_habitation_summaries():
     return summaries
 
 
-def get_risk_profile(habitation_id: str):
+def get_risk_profile(habitation_id: str, db: Session | None = None, hazard_type: str = "landslide"):
+    if HAS_ORM_MODELS and db is not None:
+        try:
+            db_risk = db.query(Risk).filter(Risk.habitation_id == habitation_id).first()
+            if db_risk:
+                return {
+                    "current": db_risk.current_risk,
+                    "risk_24h": db_risk.risk_24h,
+                    "risk_72h": db_risk.risk_72h,
+                    "confidence": db_risk.confidence,
+                    "drivers": db_risk.risk_drivers or [],
+                    "timestamp": db_risk.prediction_timestamp.isoformat() if db_risk.prediction_timestamp else datetime.now(timezone.utc).isoformat(),
+                }
+        except Exception:
+            pass
+
+
     for habitation in HABITATIONS:
         if habitation["id"] == habitation_id:
             return {
@@ -118,6 +208,6 @@ def get_risk_profile(habitation_id: str):
                 "risk_72h": habitation["risk_72h"],
                 "confidence": habitation["confidence"],
                 "drivers": habitation["drivers"],
-                "timestamp": "2026-09-18T10:00:00Z",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
     return None

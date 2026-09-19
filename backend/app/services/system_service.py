@@ -8,5 +8,5 @@ def get_system_status():
         "model_status": settings.MODEL_STATUS,
         "forecast_horizon": settings.FORECAST_HORIZON,
         "data_status": settings.DATA_STATUS,
-        "last_update": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+        "last_update": datetime.now(timezone.utc).isoformat(),
     }
