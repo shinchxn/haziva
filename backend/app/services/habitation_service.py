@@ -88,9 +88,9 @@ def get_habitation(habitation_id: str, db: Session | None = None, hazard_type: s
                 return {
                     "id": db_hab.id,
                     "name": db_hab.name,
-                    "location": {"type": "Point", "coordinates": [76.0, 11.6]},
-                    "latitude": 11.6,
-                    "longitude": 76.0,
+                    "location": {"type": "Point", "coordinates": [float(db_hab.longitude), float(db_hab.latitude)]},
+                    "latitude": float(db_hab.latitude),
+                    "longitude": float(db_hab.longitude),
                     "population": db_hab.population or 0,
                     "households": db_hab.households or 0,
                     "exposure_info": db_hab.exposure_info or {},
