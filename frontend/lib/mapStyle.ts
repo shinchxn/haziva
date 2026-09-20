@@ -1,32 +1,33 @@
 import type { StyleSpecification } from "maplibre-gl";
 
 /**
- * Reliable, production-ready CARTO Positron light basemap style for MapLibre GL.
- * Replaces external demotiles.maplibre.org dependency to prevent tile fetch & CORS errors.
+ * 100% Free OpenStreetMap raster tile style for MapLibre GL.
+ * Zero API keys, zero access tokens, zero rate-limit or CORS errors.
  */
-export const CARTO_LIGHT_STYLE: StyleSpecification = {
+export const OPENSTREETMAP_STYLE: StyleSpecification = {
   version: 8,
   sources: {
-    "carto-light": {
+    "osm-tiles": {
       type: "raster",
       tiles: [
-        "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        "https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png",
       ],
       tileSize: 256,
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
   },
   layers: [
     {
-      id: "carto-light-layer",
+      id: "osm-tiles-layer",
       type: "raster",
-      source: "carto-light",
+      source: "osm-tiles",
       minzoom: 0,
       maxzoom: 19,
     },
   ],
 };
+
+export const CARTO_LIGHT_STYLE = OPENSTREETMAP_STYLE;
