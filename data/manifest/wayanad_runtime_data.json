@@ -1,0 +1,21 @@
+{
+  "project": "HAZIVA",
+  "region": "Wayanad, Kerala",
+  "dataset_version": "v1.0.0",
+  "baseline_counts": {
+    "relocation_candidate_count": 794,
+    "habitation_count": 48
+  },
+  "sources": {
+    "osm_infrastructure": "OpenStreetMap Overpass API extract (Meppadi/Wayanad public facilities & road network)",
+    "census_population": "Census of India 2011 / NWDP village population reconciliation",
+    "hazard_terrain": "Copernicus 30m DEM + GSI 1:50k NLSM Landslide Susceptibility"
+  },
+  "checksums_sha256": {
+    "data/raw/infrastructure/osm/meppadi_osm_infrastructure.json": "7bbd3779f20c0a5968dd1f37bf80dcbb2c7c14b45328b027a66a690cfb9402ca",
+    "data/processed/exposure/census_nwdp_reconciliation/wayanad_census_nwdp_village_population_2011.gpkg": "dd98d1500cc04bfd7bd4c2dec8b33cc46921f1118e3f712fb2bb3d41c930e467",
+    "data/processed/exposure/village_risk/wayanad_village_dynamic_risk.csv": "749baf5a1148ec2440e27fd92c0b8c889457fb11e93b266790b5bd06fa983a15",
+    "data/processed/exposure/village_risk/wayanad_village_risk_exposure.csv": "09554e11660373f6ebefb91e9d960c037768146d3cd0177fb8a37c7ec4c14632",
+    "data/processed/exposure/relocation/wayanad_relocation_candidate_ranking.csv": "c423c05d2f721b29c424641342510270f5a12b964b5af45e3a55ce163fb091b9"
+  }
+}

@@ -76,12 +76,20 @@ def seed_database(db: Session | None = None) -> None:
         print("=" * 80)
 
         # 1. Load DataFrames
-        if not DYNAMIC_RISK_CSV.exists():
-            raise FileNotFoundError(f"Dynamic risk CSV missing at: {DYNAMIC_RISK_CSV}")
-        if not RISK_EXPOSURE_CSV.exists():
-            raise FileNotFoundError(f"Risk exposure CSV missing at: {RISK_EXPOSURE_CSV}")
-        if not RELOCATION_RANKING_CSV.exists():
-            raise FileNotFoundError(f"Relocation ranking CSV missing at: {RELOCATION_RANKING_CSV}")
+        missing_files = []
+        if not DYNAMIC_RISK_CSV.exists(): missing_files.append(str(DYNAMIC_RISK_CSV.relative_to(ROOT)))
+        if not RISK_EXPOSURE_CSV.exists(): missing_files.append(str(RISK_EXPOSURE_CSV.relative_to(ROOT)))
+        if not RELOCATION_RANKING_CSV.exists(): missing_files.append(str(RELOCATION_RANKING_CSV.relative_to(ROOT)))
+
+        if missing_files:
+            raise RuntimeError(
+                f"\n{'='*80}\n"
+                f"SETUP ERROR: Runtime seed dataset(s) missing:\n"
+                + "\n".join(f"  - {f}" for f in missing_files) + "\n\n"
+                "Please verify Git checkout or run `python scripts/validate_relocation_data.py` / `python scripts/prepare_relocation_data.py`.\n"
+                f"{'='*80}"
+            )
+
 
         dynamic_df = pd.read_csv(DYNAMIC_RISK_CSV)
         exposure_df = pd.read_csv(RISK_EXPOSURE_CSV)

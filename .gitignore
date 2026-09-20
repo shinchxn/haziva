@@ -21,7 +21,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
+/MANIFEST
 
 # Virtual Environments
 venv/
@@ -82,8 +82,22 @@ wandb/
 *.prj
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/infrastructure/
+!data/raw/infrastructure/osm/
+!data/raw/infrastructure/osm/meppadi_osm_infrastructure.json
+
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/exposure/
+!data/processed/exposure/census_nwdp_reconciliation/
+!data/processed/exposure/census_nwdp_reconciliation/wayanad_census_nwdp_village_population_2011.gpkg
+!data/processed/exposure/village_risk/
+!data/processed/exposure/village_risk/wayanad_village_dynamic_risk.csv
+!data/processed/exposure/village_risk/wayanad_village_risk_exposure.csv
+!data/processed/exposure/relocation/
+!data/processed/exposure/relocation/wayanad_relocation_candidate_ranking.csv
+!data/processed/exposure/relocation/wayanad_relocation_candidate_ranking.gpkg
+
 data/features/*
 !data/features/.gitkeep
 data/relocation/*

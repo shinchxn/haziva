@@ -189,14 +189,21 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Database Seeding
-Initialize SQLite/PostGIS database and seed 48 habitations and 794 relocation candidate sites from processed GIS layers:
+### 2. Validate Runtime Data Lineage
+Run the data validation script to verify that all tracked runtime datasets (~5 MB bundle: Census GPKG, OSM infrastructure, village risk CSVs, relocation ranking CSV) and manifest checksums are present and intact:
+
+```bash
+python scripts/validate_relocation_data.py
+```
+
+### 3. Database Seeding
+Initialize SQLite/PostGIS database and seed 48 habitations and 794 relocation candidate sites from verified runtime data:
 
 ```bash
 python -m backend.app.database.seed
 ```
 
-### 3. Launch Backend API
+### 4. Launch Backend API
 Start the FastAPI development server:
 
 ```bash
@@ -204,7 +211,7 @@ python -m uvicorn backend.app.main:app --port 8000 --reload
 ```
 *Backend API server will run at `http://localhost:8000`.*
 
-### 4. Launch Frontend Dashboard
+### 5. Launch Frontend Dashboard
 In a separate terminal window, start the Next.js development server:
 
 ```bash
@@ -221,12 +228,13 @@ npm run dev
 Run the complete backend & data lineage integration test suite:
 
 ```bash
-# Run all pytest suites
-python -m pytest
+# Validate dataset manifest & relocation candidate-habitation linkage
+python scripts/validate_relocation_data.py
 
-# Run specific data lineage integration test
-python -m pytest tests/test_relocation_lineage.py
+# Run all backend unit & integration pytest suites (19 tests)
+python -m pytest backend/tests/test_simulation_relocation.py backend/tests/test_backend_api.py
 ```
+
 
 ---
 

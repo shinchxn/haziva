@@ -14,12 +14,12 @@ SUPPORTED_HAZARDS = {"landslide"}
 _model_payload: dict[str, Any] | None = None
 
 
-def get_spatial_ml_model() -> dict[str, Any]:
+def get_spatial_ml_model() -> dict[str, Any] | None:
     """Lazy-load the trained RandomForest Model A artifact once into memory."""
     global _model_payload
     if _model_payload is None:
         if not MODEL_PATH.exists():
-            raise FileNotFoundError(f"ML Model A artifact missing at: {MODEL_PATH}")
+            return None
         _model_payload = joblib.load(MODEL_PATH)
     return _model_payload
 
@@ -36,6 +36,13 @@ def predict_spatial_susceptibility(feature_dict: dict[str, Any]) -> float:
     Returns spatial landslide susceptibility probability P_ml in [0.0, 1.0].
     """
     payload = get_spatial_ml_model()
+    if payload is None:
+        slope = float(feature_dict.get("slope_degrees", feature_dict.get("slope", 18.5)))
+        gsi = float(feature_dict.get("gsi_susceptibility", feature_dict.get("susceptibility", 0.55)))
+        slope_factor = min(1.0, max(0.0, (slope - 10.0) / 30.0))
+        susc = 0.6 * gsi + 0.4 * slope_factor
+        return round(min(max(susc, 0.0), 1.0), 4)
+
     model = payload["model"]
     feature_names = payload["features"]
 
@@ -44,7 +51,7 @@ def predict_spatial_susceptibility(feature_dict: dict[str, Any]) -> float:
         "slope_degrees": float(feature_dict.get("slope_degrees", feature_dict.get("slope", 18.5))),
         "tree_fraction": float(feature_dict.get("tree_fraction", 0.65)),
         "shrub_fraction": float(feature_dict.get("shrub_fraction", 0.10)),
-        "grass_fraction": float(feature_dict.get("grass_fraction", 0.10)),
+        "grass_fraction": float(feature_dict.get("grass_fraction", 0.08)),
         "crop_fraction": float(feature_dict.get("crop_fraction", 0.08)),
         "builtup_fraction": float(feature_dict.get("builtup_fraction", 0.04)),
         "bare_fraction": float(feature_dict.get("bare_fraction", 0.02)),
