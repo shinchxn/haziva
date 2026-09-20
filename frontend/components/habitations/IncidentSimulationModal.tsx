@@ -222,7 +222,7 @@ export default function IncidentSimulationModal({
 
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-2">
                 <p className="text-xs font-semibold text-slate-700 uppercase">
-                  Simulation Risk Drivers
+                  Model A Inference Risk Drivers
                 </p>
                 <ul className="space-y-1 text-xs text-slate-600">
                   {simulationResult.simulation_result.drivers.map((driver) => (
@@ -232,6 +232,106 @@ export default function IncidentSimulationModal({
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              {/* RELOCATION INTELLIGENCE FOR SIMULATED SCENARIO */}
+              <div className="rounded-xl border border-blue-200 bg-blue-50/40 p-5 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-blue-200 pb-3 gap-2">
+                  <div>
+                    <span className="rounded bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                      REAL RELOCATION INTELLIGENCE
+                    </span>
+                    <h3 className="text-sm font-bold text-blue-950 mt-1">
+                      Relocation Candidate Recommendations
+                    </h3>
+                    <p className="text-xs text-blue-800">
+                      Evaluated for simulated origin priority: <strong className="text-blue-950 font-bold">{simulationResult.relocation?.priority || simulationResult.simulation_result.priority}</strong>
+                    </p>
+                  </div>
+                  <div className="text-left sm:text-right text-xs">
+                    <span className="inline-block rounded-full bg-blue-100 px-3 py-1 font-bold text-blue-900 border border-blue-200">
+                      Urgency: {simulationResult.relocation?.urgency || "HIGH"}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 bg-white p-3 rounded-lg border border-blue-100">
+                  ℹ️ <strong>Candidate Provenance Note:</strong> Relocation candidate sites below come directly from the project's real GIS/OSM dataset. Evacuation facilities are <strong>never synthetic</strong> or fabricated for simulations.
+                </p>
+
+                {/* Candidate Sites List */}
+                <div className="space-y-3">
+                  {((simulationResult.relocation?.sites || simulationResult.relocation_sites) ?? []).map((site) => (
+                    <div key={site.site_id} className="rounded-xl border border-slate-200 bg-white p-4 space-y-2 shadow-sm">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-sm text-slate-900">{site.name || site.site_id}</h4>
+                            <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 uppercase">
+                              {site.facility_category || "Facility"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-400 font-mono mt-0.5">
+                            ID: {site.site_id} • OSM Source
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
+                            site.safety === 'PASS' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                            site.safety === 'FLAG' ? 'bg-red-100 text-red-800 border border-red-300' :
+                            'bg-amber-100 text-amber-900 border border-amber-300'
+                          }`}>
+                            Safety: {site.safety}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs pt-2 border-t border-slate-100">
+                        <div className="rounded bg-slate-50 p-2">
+                          <span className="text-slate-500 block text-[10px]">Shelter Capacity</span>
+                          <span className="font-bold text-slate-900">
+                            {site.capacity != null ? `${site.capacity} people` : "Unverified"}
+                          </span>
+                          <span className="text-[10px] text-amber-700 block mt-0.5 font-medium">
+                            ({site.capacity_status || "HEURISTIC"} label)
+                          </span>
+                        </div>
+
+                        <div className="rounded bg-slate-50 p-2">
+                          <span className="text-slate-500 block text-[10px]">Water Availability</span>
+                          <span className="font-bold text-slate-800">
+                            {(site.infrastructure?.water as { status?: string })?.status || "UNKNOWN"}
+                          </span>
+                          <span className="text-[10px] text-slate-500 block mt-0.5">
+                            Requires Authority Check
+                          </span>
+                        </div>
+
+                        <div className="rounded bg-slate-50 p-2 col-span-2 sm:col-span-1">
+                          <span className="text-slate-500 block text-[10px]">Road Proximity</span>
+                          <span className="font-bold text-slate-900">
+                            {site.accessibility || "OSM Proximity"}
+                          </span>
+                          <span className="text-[10px] text-slate-500 block mt-0.5">
+                            Nearest OSM Road Segment
+                          </span>
+                        </div>
+                      </div>
+
+                      {site.ranking_explanation && (
+                        <div className="rounded bg-slate-50 p-2.5 text-[11px] text-slate-600 border border-slate-200">
+                          <strong className="text-slate-700">Justification:</strong> {site.ranking_explanation}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {((simulationResult.relocation?.sites || simulationResult.relocation_sites) ?? []).length === 0 && (
+                    <div className="rounded-lg bg-amber-50 p-4 text-xs font-semibold text-amber-900 border border-amber-200">
+                      No verified relocation candidates available for this habitation in the dataset.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}

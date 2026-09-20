@@ -230,7 +230,41 @@ python -m pytest tests/test_relocation_lineage.py
 
 ---
 
-## 🛡️ 10. Scope & Decision-Support Disclaimer
+## ⚡ 10. Incident Simulation and Relocation
+
+HAZIVA includes a dedicated "What-If" Incident Simulation engine designed for controlled testing and disaster preparedness drills:
+
+```
+SYNTHETIC INCIDENT INPUT
+        ↓
+REAL HABITATION GEOMETRY & TERRAIN CONTEXT
+        ↓
+SAME TRAINED ML MODEL (Model A Random Forest)
+        ↓
+MODEL-GENERATED SIMULATED RISK
+        ↓
+RELOCATION PRIORITY & URGENCY
+        ↓
+REAL CANDIDATE RELOCATION SITES
+        ↓
+REAL GIS / SAFETY / ACCESSIBILITY EVIDENCE
+        ↓
+HUMAN AUTHORITY DECISION SUPPORT
+```
+
+Key principles of the simulation pipeline:
+1. **Synthetic Incident Inputs**: Rain scenarios (e.g. 50mm, 150mm, 300mm) are synthetic for controlled what-if testing.
+2. **Real Model Inference**: Synthetic dynamic inputs pass through the exact same feature-engineering and trained Random Forest model (`Model A` / `model_a_with_gsi.joblib`). Risk is never manually assigned.
+   - **Features INSIDE Trained Model A (11 features)**: Copernicus 30m DEM slope (`slope_degrees` — 69.9% importance), GSI 1:50k NLSM susceptibility & coverage (`gsi_susceptibility` — 12.3%, `gsi_coverage` — 6.7%), and 8 ESA WorldCover 30m landcover fraction features (`grass_fraction`, `tree_fraction`, `crop_fraction`, `builtup_fraction`, `water_fraction`, `bare_fraction`, `wetland_fraction`, `shrub_fraction`).
+   - **Features OUTSIDE Model A (System Architecture Layer)**: Dynamic Rainfall Stress ($S = 1 - e^{-\alpha R}$), Census 2011 Population & Exposure (used in village priority ranking), and OSM Facilities & Road Network (used in relocation candidate search).
+3. **Real Relocation Candidates**: Evacuation facilities are drawn directly from the OSM relocation candidate dataset (`wayanad_relocation_candidate_ranking.csv`). HAZIVA **never fabricates synthetic relocation sites**.
+4. **Truthfulness of Evidence**: Candidate site safety evidence (`INSUFFICIENT_EVIDENCE`), shelter capacity (`HEURISTIC`), water availability (`UNKNOWN`), and road proximity (`NEAREST_OSM_ROAD_AVAILABLE`) remain truthful based on real candidate GIS sampling.
+5. **Baseline Isolation**: Incident simulations run purely in-memory. They **never persist to or overwrite baseline database records** (`current_risk`, `risk_24h`, `risk_72h`, or candidate status).
+
+
+---
+
+## 🛡️ 11. Scope & Decision-Support Disclaimer
 
 1. **Decision Support Only:** HAZIVA is designed to assist disaster response commanders, NDRF officers, and district administration. It does **NOT** issue automated evacuation orders or replace human decision-making.
 2. **Predictive Uncertainty:** Risk estimates reflect probabilistic multi-criteria spatial modeling based on available GIS rasters and forecast rainfall. They are **NOT** deterministic guarantees of landslide occurrences.

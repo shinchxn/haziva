@@ -77,6 +77,9 @@ def predict_risk(habitation_id: str, features: dict[str, Any], hazard_type: str 
 
     # 1. Real ML spatial susceptibility probability
     susceptibility_proba = predict_spatial_susceptibility(features)
+    base_susc = float(features.get("susceptibility", 0.0))
+    if base_susc > 0.0:
+        susceptibility_proba = max(susceptibility_proba, base_susc)
 
     # 2. Extract rainfall inputs (observed 24h & forecast 24h/72h)
     observed_rain = float(features.get("observed_rainfall_mm", features.get("rainfall", 0.0)))

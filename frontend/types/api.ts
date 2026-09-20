@@ -85,6 +85,7 @@ export interface RelocationProfile {
 
 export interface SimulationResult {
   is_simulation: boolean;
+  is_synthetic?: boolean;
   simulation_disclaimer: string;
   habitation_id: string;
   habitation_name: string;
@@ -106,6 +107,13 @@ export interface SimulationResult {
     confidence: number;
     confidence_reason: string;
     drivers: string[];
+  };
+  relocation?: {
+    priority: string;
+    relocation_required: boolean;
+    urgency: string;
+    total_candidates: number;
+    sites: RelocationSite[];
   };
   relocation_sites: RelocationSite[];
 }
