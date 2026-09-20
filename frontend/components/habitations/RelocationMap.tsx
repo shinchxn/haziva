@@ -5,10 +5,12 @@ import maplibregl from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
+import { CARTO_LIGHT_STYLE } from "@/lib/mapStyle";
 import type {
   HabitationDetail,
   RelocationSite,
 } from "@/types/api";
+
 
 interface RelocationMapProps {
   habitation: HabitationDetail;
@@ -117,8 +119,9 @@ export default function RelocationMap({
 
     const newMap = new maplibregl.Map({
       container: mapContainer.current,
-      style: "https://demotiles.maplibre.org/style.json",
+      style: CARTO_LIGHT_STYLE,
       center: [
+
         habitation.longitude,
         habitation.latitude,
       ],

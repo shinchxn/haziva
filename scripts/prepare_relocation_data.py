@@ -14,8 +14,8 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("prepare_relocation_data")
 
-
 ROOT = Path(__file__).resolve().parent.parent
+
 
 # Required GIS Rasters for full offline re-generation
 RASTER_FILES = [

@@ -6,8 +6,11 @@ import maplibregl from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
+import { CARTO_LIGHT_STYLE } from "@/lib/mapStyle";
+
 import type { HabitationSummary } from "@/types/api";
 import { RISK_COLORS, classifyRisk } from "@/lib/riskClassification";
+
 
 interface HabitationMapProps {
   habitations: HabitationSummary[];
@@ -76,10 +79,11 @@ export default function HabitationMap({
 
     const newMap = new maplibregl.Map({
       container: mapContainer.current,
-      style: "https://demotiles.maplibre.org/style.json",
+      style: CARTO_LIGHT_STYLE,
       center: [76.04, 11.61],
       zoom: 10,
     });
+
 
     newMap.addControl(new maplibregl.NavigationControl(), "top-right");
 
