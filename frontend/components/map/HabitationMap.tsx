@@ -6,7 +6,8 @@ import maplibregl from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { CARTO_LIGHT_STYLE } from "@/lib/mapStyle";
+import { OPENFREEMAP_LIBERTY_STYLE } from "@/lib/mapStyle";
+
 
 import type { HabitationSummary } from "@/types/api";
 import { RISK_COLORS, classifyRisk } from "@/lib/riskClassification";
@@ -79,13 +80,18 @@ export default function HabitationMap({
 
     const newMap = new maplibregl.Map({
       container: mapContainer.current,
-      style: CARTO_LIGHT_STYLE,
+      style: OPENFREEMAP_LIBERTY_STYLE,
       center: [76.04, 11.61],
       zoom: 10,
     });
 
+    newMap.on("error", (e) => {
+      console.warn("MapLibre event diagnostic:", e);
+    });
 
     newMap.addControl(new maplibregl.NavigationControl(), "top-right");
+
+
 
     const setupMapLayers = async () => {
       try {

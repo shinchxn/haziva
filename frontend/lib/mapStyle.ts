@@ -1,33 +1,15 @@
-import type { StyleSpecification } from "maplibre-gl";
-
 /**
- * 100% Free OpenStreetMap raster tile style for MapLibre GL.
- * Zero API keys, zero access tokens, zero rate-limit or CORS errors.
+ * Official OpenFreeMap Liberty Vector Basemap Style for MapLibre GL JS.
+ * Website: https://openfreemap.org/
+ * Quick Start Guide: https://openfreemap.org/quick_start/
+ * 
+ * OpenFreeMap is 100% free, open-source (OpenStreetMap derived), and requires:
+ * - NO API key
+ * - NO registration / account
+ * - NO rate limit secret tokens
+ * - NO environment variables
  */
-export const OPENSTREETMAP_STYLE: StyleSpecification = {
-  version: 8,
-  sources: {
-    "osm-tiles": {
-      type: "raster",
-      tiles: [
-        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      ],
-      tileSize: 256,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    },
-  },
-  layers: [
-    {
-      id: "osm-tiles-layer",
-      type: "raster",
-      source: "osm-tiles",
-      minzoom: 0,
-      maxzoom: 19,
-    },
-  ],
-};
+export const OPENFREEMAP_LIBERTY_STYLE = "https://tiles.openfreemap.org/styles/liberty";
 
-export const CARTO_LIGHT_STYLE = OPENSTREETMAP_STYLE;
+// Export backward-compatible alias for existing imports
+export const CARTO_LIGHT_STYLE = OPENFREEMAP_LIBERTY_STYLE;
